@@ -15,6 +15,7 @@ namespace LMS_Project.Models
 
         }
       
+
            protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
