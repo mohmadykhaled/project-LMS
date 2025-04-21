@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using LMS_Project.Models;
+using LMS_Project.Data;
 
 
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using LMS_Project.Models;
 using LMS_Project.ConfigurationClasses;
-namespace LMS_Project.Models
+namespace LMS_Project.Data
 {
     public class LMSDbContext : DbContext  
     {
