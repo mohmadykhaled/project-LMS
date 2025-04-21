@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using LMS_Project.Models;
 
+
+
 namespace LMS_Project
 {
     public class Program
@@ -8,7 +10,7 @@ namespace LMS_Project
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<LMSDbContext>(options =>

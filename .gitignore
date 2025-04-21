@@ -1,0 +1,17 @@
+# Ignore build and VS files
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# Ignore temporary files
+*.log
+*.tmp
+
+# Ignore IDE specific files
+*.vcxproj.user
+*.dbmdl
+
+# Ignore published files
+publish/

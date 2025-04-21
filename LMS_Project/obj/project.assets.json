@@ -4012,11 +4012,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Projects\\LMS_Project\\LMS_Project.csproj",
+      "projectUniqueName": "D:\\LMS_Projects\\LMS_Project\\LMS_Project.csproj",
       "projectName": "LMS_Project",
-      "projectPath": "D:\\Projects\\LMS_Project\\LMS_Project.csproj",
+      "projectPath": "D:\\LMS_Projects\\LMS_Project\\LMS_Project.csproj",
       "packagesPath": "C:\\Users\\bdalr\\.nuget\\packages\\",
-      "outputPath": "D:\\Projects\\LMS_Project\\obj\\",
+      "outputPath": "D:\\LMS_Projects\\LMS_Project\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
