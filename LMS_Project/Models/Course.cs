@@ -7,12 +7,21 @@ namespace LMS_Project.Models
     {
         [Key]
         public int CourseId { get; set; }
-        public string CourseName { get; set; } 
+        [Required(ErrorMessage = "Course Name is required")]
+        public string CourseName { get; set; }
+        [Required]
         public string Description { get; set; }
+        [Required]
+        public string Title { get; set; }
+        [Required]
+        public float Price { get; set; }    
+
         [ForeignKey("Instructor")]
         public int? InstructorId { get; set; }   
         public Instructor Instructor { get; set; }
+        public List<string> Content { get; set; }
         public List<Material> Materials { get; set; } 
         public List<StudentCourse> StudentCourses { get; set; }
+        public List<Content> Contents { get; set; }
     }
 }

@@ -10,7 +10,8 @@ namespace LMS_Project.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<Material> Materials { get; set; }
         public DbSet<Admin> Admins { get; set; }
-
+        public DbSet<Content> Contents { get; set; }
+        public DbSet<StudentCourse> StudentCourses { get; set; }    
         public LMSDbContext(DbContextOptions options): base(options)
         {
 
@@ -24,7 +25,8 @@ namespace LMS_Project.Data
             modelBuilder.ApplyConfiguration(new CourseConguration());
            // modelBuilder.ApplyConfiguration(new MaterialConfiguration());
             modelBuilder.ApplyConfiguration(new AdminConfiguration());
-
+            modelBuilder.ApplyConfiguration(new ContentConfiguration());
+            modelBuilder.ApplyConfiguration(new StudentCouresConfiguration());
         }
 
 

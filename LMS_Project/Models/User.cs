@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using LMS_Project.Enums;
 using LMS_Project.Models;
 using Microsoft.Extensions.Configuration.UserSecrets;
 
@@ -25,10 +24,6 @@ namespace LMS_Project.Models
         public string Email { get; set; }
 
         public string FullName { get; set; }
-
-        [Required(ErrorMessage = "User role is required")]
-       
-        public UserRole role { get; set; } // Enum: Admin, Instructor, Student
 
     }
 }
