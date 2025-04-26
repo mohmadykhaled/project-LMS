@@ -30,6 +30,3 @@ namespace LMS_Project.Models
 
 
 
-
- //Role: UserRole(enum: Admin, Instructor, Student)
-
