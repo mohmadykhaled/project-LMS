@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using LMS_Project.Models;
 using LMS_Project.ConfigurationClasses;
+
 namespace LMS_Project.Data
 {
     public class LMSDbContext : DbContext  
@@ -23,13 +24,16 @@ namespace LMS_Project.Data
             modelBuilder.ApplyConfiguration(new StudentConfiguration());
             modelBuilder.ApplyConfiguration(new InstructorConfiguration());
             modelBuilder.ApplyConfiguration(new CourseConguration());
-           // modelBuilder.ApplyConfiguration(new MaterialConfiguration());
+            modelBuilder.ApplyConfiguration(new MaterialConfiguration());
             modelBuilder.ApplyConfiguration(new AdminConfiguration());
             modelBuilder.ApplyConfiguration(new ContentConfiguration());
             modelBuilder.ApplyConfiguration(new StudentCouresConfiguration());
         }
 
-
+        internal object FindAsync(Func<object, bool> value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 
