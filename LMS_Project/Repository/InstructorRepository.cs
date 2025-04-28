@@ -7,13 +7,7 @@ namespace LMS_Project.Repositories
 {
     public class InstructorRepository : GenericRepository<Instructor>, IInstructorRepository
     {
-        private readonly ApplicationDbContext _context;
-
-
-        public InstructorRepository(ApplicationDbContext context) : base(context)
-        {
-            _context = context;
-        }
+        // ... existing code ...
 
         public async Task<bool> SubmitCourseForApproval(int instructorId, Course course)
         {
