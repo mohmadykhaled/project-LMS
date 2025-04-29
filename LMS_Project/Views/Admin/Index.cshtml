@@ -1,0 +1,89 @@
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Admin Dashboard</h1>
+    
+    <div class="row mt-4">
+        <!-- User Statistics -->
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">User Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h3>@ViewBag.UserStats["TotalUsers"]</h3>
+                                <p>Total Users</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h3>@ViewBag.UserStats["ActiveUsers"]</h3>
+                                <p>Active Users</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h3>@ViewBag.UserStats["InactiveUsers"]</h3>
+                                <p>Inactive Users</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Statistics -->
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Course Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h3>@ViewBag.CourseStats["TotalCourses"]</h3>
+                                <p>Total Courses</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h3>@ViewBag.CourseStats["ActiveCourses"]</h3>
+                                <p>Active Courses</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <h3>@ViewBag.CourseStats["InactiveCourses"]</h3>
+                                <p>Inactive Courses</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Users" class="btn btn-primary">Manage Users</a>
+                        <a asp-action="Courses" class="btn btn-success">Manage Courses</a>
+                        <a asp-action="Roles" class="btn btn-info">Manage Roles</a>
+                        <a asp-action="Settings" class="btn btn-secondary">System Settings</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
