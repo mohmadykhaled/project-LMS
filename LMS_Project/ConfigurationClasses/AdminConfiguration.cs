@@ -10,24 +10,18 @@ namespace LMS_Project.ConfigurationClasses
         {
             builder.ToTable("Admins");
 
+           
             builder.HasKey(a => a.AdminId);
 
-            builder.Property(a => a.Username)
-                .IsRequired()
-                .HasMaxLength(50);
+            
+            builder.Property(a => a.ApplicationUserId)
+                .IsRequired();
 
-            builder.Property(a => a.Password)
-                .IsRequired()
-                .HasMaxLength(20);
-
-            builder.Property(a => a.Email)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            builder.Property(a => a.FullName)
-                .HasMaxLength(100);
-           
-            builder.HasIndex(a => a.Email).IsUnique();
+            
+            builder.HasOne(a => a.User)
+                .WithOne(u => u.AdminProfile)
+                .HasForeignKey<Admin>(a => a.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

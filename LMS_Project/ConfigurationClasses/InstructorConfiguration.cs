@@ -12,31 +12,28 @@ namespace LMS_Project.ConfigurationClasses
 
             builder.HasKey(i => i.InstructorId);
 
+           
+            builder.Property(i => i.ApplicationUserId)
+                .IsRequired();
+
+           
             builder.Property(i => i.HireDate)
                 .IsRequired();
 
-            builder.Property(i => i.Username)
-                .IsRequired()
-                .HasMaxLength(50);
+           
+            builder.HasOne(i => i.User)
+                .WithOne(u => u.InstructorProfile)
+                .HasForeignKey<Instructor>(i => i.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade); 
 
-            builder.Property(i => i.Password)
-                .IsRequired()
-                .HasMaxLength(20);
-
-            builder.Property(i => i.Email)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            builder.Property(i => i.FullName)
-                .HasMaxLength(100);
-
-          
+           
             builder.HasMany(i => i.Courses)
                 .WithOne(c => c.Instructor)
                 .HasForeignKey(c => c.InstructorId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(i => i.Email).IsUnique();
+            builder.HasIndex(s => s.ApplicationUserId).IsUnique();
+
         }
     }
     

@@ -16,7 +16,7 @@ namespace LMS_Project.Repository
         public async Task<IEnumerable<Content>> GetContentsByCourseIdAsync(int courseId)
         {
           
-            return await context.Contents.Where(c => c.CourseId == courseId).ToListAsync();
+            return await context.Contents.Where(c => c.CourseId == courseId).AsNoTracking().ToListAsync();
         }
     }
 }

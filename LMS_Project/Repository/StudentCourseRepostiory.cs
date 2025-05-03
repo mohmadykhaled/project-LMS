@@ -30,6 +30,7 @@ namespace LMS_Project.Repository
             return await context.StudentCourses
                 .Where(SC => SC.StudentId == studentId)
                 .Include(sc =>sc.Course)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -37,7 +38,8 @@ namespace LMS_Project.Repository
         {
             return await  context.StudentCourses
                                  .Where(sc => sc.CourseId == courseId)
-                                 .Include(sc => sc.Student)  
+                                 .Include(sc => sc.Student)
+                                 .AsNoTracking()
                                  .ToListAsync();
         }
         public async Task  UnEnrollStudentAsync(int studentId, int courseId)

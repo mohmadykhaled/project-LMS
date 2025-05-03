@@ -10,37 +10,34 @@ namespace LMS_Project.ConfigurationClasses
         {
             builder.ToTable("Students");
 
+            
             builder.HasKey(s => s.StudentId);
 
+           
+            builder.Property(s => s.ApplicationUserId)
+                .IsRequired();
+
+          
             builder.Property(s => s.EnrollmentDate)
                 .IsRequired();
 
             builder.Property(s => s.DateOfBirth)
                 .IsRequired();
 
+            
+            builder.HasOne(s => s.User)
+                .WithOne(u => u.StudentProfile)
+                .HasForeignKey<Student>(s => s.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade); 
+
            
-            builder.Property(s => s.Username)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            builder.Property(s => s.Password)
-                .IsRequired()
-                .HasMaxLength(20);
-
-            builder.Property(s => s.Email)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            builder.Property(s => s.FullName)
-                .HasMaxLength(100);
-
-
             builder.HasMany(s => s.StudentCourses)
                 .WithOne(sc => sc.Student)
                 .HasForeignKey(sc => sc.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(s => s.Email).IsUnique();
+           
+            builder.HasIndex(s => s.ApplicationUserId).IsUnique();
         }
 
       

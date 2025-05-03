@@ -30,13 +30,16 @@ namespace LMS_Project.Repository
 
         public async Task<IEnumerable<T>> GetAll()
         {
-            IEnumerable<T> entities = await context.Set<T>().ToListAsync();
+            IEnumerable<T> entities = await context.Set<T>()
+                .AsNoTracking()
+                .ToListAsync();
             return entities;    
         }
 
         public async Task<T> GetById(int id)
         {
-            var entity = await context.Set<T>().FindAsync(id);
+            var entity = await context.Set<T>()
+                .FindAsync(id);
             if (entity != null)
             {
                 return entity;
@@ -47,7 +50,7 @@ namespace LMS_Project.Repository
             }
         }
 
-        public async Task Save(T entity)
+        public async Task Save()
         {
              await context.SaveChangesAsync();
         }

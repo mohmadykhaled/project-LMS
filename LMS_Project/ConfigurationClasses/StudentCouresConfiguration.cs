@@ -10,24 +10,24 @@ namespace LMS_Project.ConfigurationClasses
         public void Configure(EntityTypeBuilder<StudentCourse> builder)
         {
 
-           
+
             builder.ToTable("StudentCourses");
 
-           
+
             builder.HasKey(sc => new { sc.StudentId, sc.CourseId });
 
-            
+
             builder.Property(sc => sc.StudentId)
                    .IsRequired();
 
             builder.HasOne(sc => sc.Student)
                    .WithMany(student => student.StudentCourses)
                    .HasForeignKey(sc => sc.StudentId)
-                   .OnDelete(DeleteBehavior.Cascade); 
+                   .OnDelete(DeleteBehavior.Restrict);
 
-            
+
             builder.Property(sc => sc.CourseId)
-                   .IsRequired(); 
+                   .IsRequired();
 
             builder.HasOne(sc => sc.Course)
                    .WithMany(course => course.StudentCourses)

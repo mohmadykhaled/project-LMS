@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using LMS_Project.Models;
 using LMS_Project.ConfigurationClasses;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace LMS_Project.Data
 {
-    public class LMSDbContext : DbContext  
+    public class LMSDbContext : IdentityDbContext<ApplicationUser>  
     {
         public DbSet<Student> Students { get; set; }
         public DbSet<Instructor> Instructors { get; set; }  
@@ -19,21 +20,14 @@ namespace LMS_Project.Data
         }
       
 
-           protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new StudentConfiguration());
-            modelBuilder.ApplyConfiguration(new InstructorConfiguration());
-            modelBuilder.ApplyConfiguration(new CourseConguration());
-            modelBuilder.ApplyConfiguration(new MaterialConfiguration());
-            modelBuilder.ApplyConfiguration(new AdminConfiguration());
-            modelBuilder.ApplyConfiguration(new ContentConfiguration());
-            modelBuilder.ApplyConfiguration(new StudentCouresConfiguration());
+
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(LMSDbContext).Assembly);
         }
 
-        internal object FindAsync(Func<object, bool> value)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }
 
