@@ -12,7 +12,7 @@ namespace LMS_Project.Repositories
 
 
         public InstructorRepository(LMSDbContext context) :base(context)    
-        {
+    {
             this._context = context;
         }
 
@@ -38,6 +38,14 @@ namespace LMS_Project.Repositories
                 .Where(c => c.InstructorId == instructorId)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task<Instructor> GetByApplicationUserId(string applicationUserId)
+        {
+            return await _context.Instructors
+                .Include(i => i.Courses)    
+                .Include(i => i.User)
+                .FirstOrDefaultAsync(i => i.ApplicationUserId == applicationUserId);    
         }
     }
 }

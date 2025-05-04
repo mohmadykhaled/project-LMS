@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using LMS_Project.Models;
 using LMS_Project.Interfaces;
+
 using LMS_Project.Repositories;
+using Microsoft.AspNetCore.Identity;
+using LMS_Project.ViewModel;
 
 namespace LMS_Project.Controllers
 {
@@ -13,218 +16,113 @@ namespace LMS_Project.Controllers
     {
         private readonly IAdminRepository _adminRepository;
 
-        public AdminController(IAdminRepository adminRepository)
-        {
-            _adminRepository = adminRepository;
-        }
 
-        // Dashboard
-        public async Task<IActionResult> Index()
-        {
-            var userStats = await _adminRepository.GetUserStatisticsAsync();
-            var courseStats = await _adminRepository.GetCourseStatisticsAsync();
-            
-            ViewBag.UserStats = userStats;
-            ViewBag.CourseStats = courseStats;
-            
-            return View();
-        }
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IAdminRepository _adminRepo;
+        private readonly IInstructorRepository instructorRepo;
 
-        // User Management
-        public async Task<IActionResult> Users()
+        public AdminController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IAdminRepository adminRepo,
+            IInstructorRepository instructorRepo)
         {
-            var users = await _adminRepository.GetAllUsersAsync();
-            return View(users);
-        }
-
-        public async Task<IActionResult> UserDetails(string id)
-        {
-            var user = await _adminRepository.GetUserByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _adminRepo = adminRepo;
+            this.instructorRepo = instructorRepo;
         }
 
         [HttpGet]
-        public IActionResult CreateUser()
-        {
-            return View();
-        }
-
-       // [HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> CreateUser(Student user)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var result = await _adminRepository.CreateUserAsync(user);
-        //        if (result)
-        //        {
-        //            return RedirectToAction(nameof(Users));
-        //        }
-        //    }
-        //    return View(user);
-        //}
-
-        [HttpGet]
-        public async Task<IActionResult> EditUser(string id)
-        {
-            var user = await _adminRepository.GetUserByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return View(user);
-        }
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> EditUser(Student user)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var result = await _adminRepository.UpdateUserAsync(user);
-        //        if (result)
-        //        {
-        //            return RedirectToAction(nameof(Users));
-        //        }
-        //    }
-        //    return View(user);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteUser(string id)
-        //{
-        //    var result = await _adminRepository.DeleteUserAsync(id);
-        //    if (!result)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return RedirectToAction(nameof(Users));
-        //}
-
-        // Course Management
-        public async Task<IActionResult> Courses()
-        {
-            var courses = await _adminRepository.GetAllCoursesAsync();
-            return View(courses);
-        }
-
-        public async Task<IActionResult> CourseDetails(int id)
-        {
-            var course = await _adminRepository.GetCourseByIdAsync(id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-            return View(course);
-        }
-
-        [HttpGet]
-        public IActionResult CreateCourse()
+        public IActionResult CreateAdmin()
         {
             return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCourse(Course course)
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> CreateAdmin(RegsiterViewModel vm)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(vm);
+
+
+            var user = new ApplicationUser();
+            user.Email = vm.Email;
+            user.FullName = vm.FullName;
+            user.PasswordHash = vm.Password;
+            user.UserName = vm.UserName;
+            
+
+            var result = await _userManager.CreateAsync(user, vm.Password);
+            if (!result.Succeeded)
             {
-                var result = await _adminRepository.CreateCourseAsync(course);
-                if (result)
+                foreach (var err in result.Errors)
+                    ModelState.AddModelError("", err.Description);
+                return View(vm);
+            }
+
+
+           var rresult2 =  await _userManager.AddToRoleAsync(user, "Admin");
+            if (!rresult2.Succeeded)
+            {
+                foreach (var err in rresult2.Errors)
+                    ModelState.AddModelError("", err.Description);
+                return View(vm);
+            }
+
+            var admin = new Admin();
+            admin.ApplicationUserId = user.Id;
+           
+            _adminRepo.Add(admin);
+            _adminRepo.Save();
+
+
+
+            TempData["Message"] = $"Admin account '{user.UserName}' created.";
+            return RedirectToAction("Index", "Home");
+
+        }
+        [HttpGet]
+        public IActionResult CreateInstructor()
+        {
+            return View();
+        }
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> CreateInstructor (InstructorViewModel instructorVM)
+        {
+           if(ModelState.IsValid)
+            {
+                ApplicationUser appUser = new ApplicationUser();
+                appUser.Email = instructorVM.Email;
+                appUser.PasswordHash = instructorVM.Password;
+                appUser.FullName = instructorVM.FullName;
+                appUser.UserName = instructorVM.UserName;
+              IdentityResult result =  await _userManager.CreateAsync(appUser , instructorVM.Password);
+                if (result.Succeeded)
                 {
-                    return RedirectToAction(nameof(Courses));
+                    await _userManager.AddToRoleAsync(appUser, "Instructor");
+                    var instructor = new Instructor();
+                    instructor.ApplicationUserId = appUser.Id;
+                    instructor.HireDate = instructorVM.HireDate.Value; 
+                    instructorRepo.Add(instructor); 
+                    instructorRepo.Save();
+                    await _signInManager.SignInAsync(appUser, false);
+                    TempData["Massage"] = $"Welcome ${instructorVM.UserName}";
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    foreach (var err in result.Errors)
+                    {
+                        ModelState.AddModelError("", err.Description);
+                    }
                 }
             }
-            return View(course);
+           return View(instructorVM);
         }
-
-        [HttpGet]
-        public async Task<IActionResult> EditCourse(int id)
-        {
-            var course = await _adminRepository.GetCourseByIdAsync(id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-            return View(course);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCourse(Course course)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _adminRepository.UpdateCourseAsync(course);
-                if (result)
-                {
-                    return RedirectToAction(nameof(Courses));
-                }
-            }
-            return View(course);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteCourse(int id)
-        {
-            var result = await _adminRepository.DeleteCourseAsync(id);
-            if (!result)
-            {
-                return NotFound();
-            }
-            return RedirectToAction(nameof(Courses));
-        }
-
-        // Role Management
-        //public async Task<IActionResult> Roles()
-        //{
-        //    var roles = await _adminRepository.GetAllRolesAsync();
-        //    return View(roles);
-        //}
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignRole(string userId, string roleId)
-        {
-            var result = await _adminRepository.AssignRoleToUserAsync(userId, roleId);
-            return RedirectToAction(nameof(UserDetails), new { id = userId });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveRole(string userId, string roleId)
-        {
-            var result = await _adminRepository.RemoveRoleFromUserAsync(userId, roleId);
-            return RedirectToAction(nameof(UserDetails), new { id = userId });
-        }
-
-        //System Settings
-        //public async Task<IActionResult> Settings()
-        //{
-        //    var settings = await _adminRepository.GetSystemSettingsAsync();
-        //    return View(settings);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> UpdateSettings(SystemSettings settings)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var result = await _adminRepository.UpdateSystemSettingsAsync(settings);
-        //        if (result)
-        //        {
-        //            return RedirectToAction(nameof(Settings));
-        //        }
-        //    }
-        //    return View(nameof(Settings), settings);
-        //}
+       
     }
 }

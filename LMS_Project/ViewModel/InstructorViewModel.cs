@@ -2,11 +2,11 @@
 
 namespace LMS_Project.ViewModel
 {
-    public class RegsiterViewModel
+    public class InstructorViewModel
     {
 
         [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid email format")]  
+        [EmailAddress(ErrorMessage = "Invalid email format")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
@@ -17,8 +17,8 @@ namespace LMS_Project.ViewModel
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
 
-       
-        [Required(ErrorMessage ="User Name is Required")]
+
+        [Required(ErrorMessage = "User Name is Required")]
         [Display(Name = "User Name")]
         [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "User name can only contain letters and numbers.")]
         public string UserName { get; set; }
@@ -27,9 +27,9 @@ namespace LMS_Project.ViewModel
         [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Full name can only contain letters")]
         public string FullName { get; set; }
 
-        // Student-specific fields
+        
         [DataType(DataType.Date)]
-        public DateTime? EnrollmentDate { get; set; } = DateTime.Now;
+        public DateTime? HireDate { get; set; } = DateTime.Now;
 
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; } = DateTime.Now;

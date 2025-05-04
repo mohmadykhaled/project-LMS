@@ -9,7 +9,7 @@
 
     <!-- Bootstrap CSS via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
     <!-- External styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
@@ -20,26 +20,26 @@
     <!-- Custom navbar styling -->
     <style>
         .bg-purple {
-            background-color: #5c6ac4;
+        background-color: #5c6ac4;
         }
 
         .nav-line {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 10px 0;
-            border-bottom: 1px solid #dee2e6;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        padding: 10px 0;
+        border-bottom: 1px solid #dee2e6;
         }
 
-            .nav-line a {
-                color: #fff;
-                text-decoration: none;
-                font-size: 1rem;
-            }
+        .nav-line a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 1rem;
+        }
 
-                .nav-line a:hover {
-                    color: #e0e0e0;
-                }
+        .nav-line a:hover {
+        color: #e0e0e0;
+        }
     </style>
 </head>
 <body>
@@ -49,9 +49,23 @@
             <a class="nav-link" asp-controller="Home" asp-action="About">About Us</a>
             <a class="nav-link" asp-controller="Home" asp-action="Courses">Courses</a>
             <a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a>
-            <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
-            <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
-            <a class="nav-link" asp-controller="Account" asp-action="SignOut">SignOut</a>
+            @if (User.Identity.IsAuthenticated == true)
+            {
+                <a class="nav-link" asp-controller="Account" asp-action="SignOut">SignOut</a>
+                <a class="nav-link" asp-controller="Account" asp-action="Profile">Profile</a>
+            }
+            else
+            {
+                <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="nav-link" asp-controller="Role" asp-action="AddRole">Add Role</a>
+                <a class="nav-link" asp-controller="Admin" asp-action="CreateAdmin">Create Admin</a>
+                <a class="nav-link" asp-controller="Admin" asp-action="CreateInstructor" >Create Instructor</a>
+                
+            }
         </div>
     </header>
 

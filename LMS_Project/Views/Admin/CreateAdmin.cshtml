@@ -1,8 +1,9 @@
 ﻿@model LMS_Project.ViewModel.RegsiterViewModel;
-
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "CreateAdmin";
 }
+
+<h1>CreateAdmin</h1>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 
@@ -15,7 +16,7 @@
             <div class="alert alert-danger">@ViewBag.Error</div>
         }
 
-        <form asp-action="Register" asp-controller="Account" method="post">
+        <form asp-action="CreateAdmin" asp-controller="Admin" method="post">
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
             <div class="mb-3">
@@ -48,7 +49,11 @@
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <div class="mb-3" id="studentFields" style="display:block;">
+            <div class="mb-3" id="studentFields" style="display:none;">
+                <label asp-for="EnrollmentDate" class="form-label">Enrollment Date</label>
+                <input asp-for="EnrollmentDate" class="form-control" type="date" />
+                <span asp-validation-for="EnrollmentDate" class="text-danger"></span>
+
                 <label asp-for="DateOfBirth" class="form-label">Date of Birth</label>
                 <input asp-for="DateOfBirth" class="form-control" type="date" />
                 <span asp-validation-for="DateOfBirth" class="text-danger"></span>

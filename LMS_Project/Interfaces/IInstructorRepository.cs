@@ -7,5 +7,6 @@ namespace LMS_Project.Interfaces
         // Custom methods specific to Instructor
         Task<bool> SubmitCourseForApproval(int instructorId, Course course);
         Task<IEnumerable<Course>> GetInstructorCourses(int instructorId);
+        Task<Instructor> GetByApplicationUserId(string applicationUserId);
     }
 }

@@ -25,6 +25,7 @@ namespace LMS_Project.Repositories
         // Role Management
         Task<bool> AssignRoleToUserAsync(string userId, string roleName);
         Task<bool> RemoveRoleFromUserAsync(string userId, string roleName);
+        Task<Admin> GetByApplicationUserId(string applicationUserId);
     }
 
 }

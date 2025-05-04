@@ -23,14 +23,14 @@ namespace LMS_Project.Controllers
         private readonly IInstructorRepository instructorRepo;
 
         public AccountController
-            (UserManager<ApplicationUser> _userManger ,SignInManager<ApplicationUser> _signInManager ,IAdminRepository _adminRepository ,
-               IStudentRepository _studentRepoitory ,IInstructorRepository _instructorRepository )
+            (UserManager<ApplicationUser> _userManger, SignInManager<ApplicationUser> _signInManager, IAdminRepository _adminRepository,
+               IStudentRepository _studentRepoitory, IInstructorRepository _instructorRepository)
         {
-            userManager = _userManger ;  
+            userManager = _userManger;
             signinManger = _signInManager;
             adminRepo = _adminRepository;
-            studentRepo = _studentRepoitory ;
-            instructorRepo = _instructorRepository ;
+            studentRepo = _studentRepoitory;
+            instructorRepo = _instructorRepository;
         }
         [HttpGet]
         [AllowAnonymous]
@@ -39,125 +39,167 @@ namespace LMS_Project.Controllers
             return View("Register");
         }
         [HttpPost]
-        public async Task<IActionResult> Register(RegsiterViewModel regsiterViewModel)
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> Register(RegsiterViewModel registerViewModel)
         {
             if (ModelState.IsValid)
             {
-                // Validate role-specific fields
-                if (regsiterViewModel.Role == "Student" && (!regsiterViewModel.EnrollmentDate.HasValue || !regsiterViewModel.DateOfBirth.HasValue))
-                {
-                    ModelState.AddModelError(string.Empty, "Enrollment Date and Date of Birth are required for Students.");
-                    return View(regsiterViewModel);
-                }
-                if (regsiterViewModel.Role == "Instructor" && !regsiterViewModel.HireDate.HasValue)
-                {
-                    ModelState.AddModelError(string.Empty, "Hire Date is required for Instructors.");
-                    return View(regsiterViewModel);
-                }
-                // Restrict Admin role assignment to authenticated admins
-                if (regsiterViewModel.Role == "Admin" && !User.IsInRole("Admin"))
-                {
-                    ModelState.AddModelError(string.Empty, "Only admins can create admin accounts.");
-                    return View(regsiterViewModel);
-                }
                 ApplicationUser appUser = new ApplicationUser();
-                appUser.Email = regsiterViewModel.Email;
-                appUser.PasswordHash = regsiterViewModel.Password;
-                appUser.UserName = regsiterViewModel.UserName;
-                appUser.FullName = regsiterViewModel.FullName;
-                IdentityResult Result = await userManager.CreateAsync(appUser , regsiterViewModel.Password);
-                if (Result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(appUser, regsiterViewModel.Role);
-                    
-                    if (regsiterViewModel.Role == "Student")
-                    {
-                        var student = new Student();
-                        student.ApplicationUserId = appUser.Id;
-                        student.DateOfBirth = regsiterViewModel.DateOfBirth.Value;
-                        student.EnrollmentDate = regsiterViewModel.EnrollmentDate.Value;
-                        studentRepo.Add(student);
-                        studentRepo.Save();
-                    }
-                    else if (regsiterViewModel.Role == "Admin")
-                    {
-                        Admin admin = new Admin();
-                        admin.ApplicationUserId = appUser.Id;
-                        adminRepo.Add(admin);
-                        adminRepo.Save();
-                    }
-                    else if (regsiterViewModel.Role == "Instructor")
-                    {
-                        var instructor = new Instructor();
-                        instructor.ApplicationUserId = appUser.Id;
-                        instructor.HireDate = regsiterViewModel.HireDate.Value;    
-                        instructorRepo.Add(instructor);
-                        instructorRepo.Save();
-                    }
-                    await signinManger.SignInAsync(appUser , isPersistent: false);
 
-                    if (regsiterViewModel.Role == "Admin")
-                    {
-                        return RedirectToAction("Index", "AdminDashboard");
-                    }
-                    else if (regsiterViewModel.Role == "Student")
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else if (regsiterViewModel.Role == "Instructor")
-                    {
-                        return RedirectToAction("Index", "InstructorDashboard");
-                    }
-                }
-                foreach (var item in Result.Errors)
+
+                appUser.Email = registerViewModel.Email;
+                appUser.UserName = registerViewModel.UserName;
+                appUser.FullName = registerViewModel.FullName;
+                appUser.PasswordHash = registerViewModel.Password;
+
+                IdentityResult result = await userManager.CreateAsync(appUser, registerViewModel.Password);
+                if (result.Succeeded)
                 {
-                    ModelState.AddModelError("", item.Description);
+                    await userManager.AddToRoleAsync(appUser, "Student");
+
+                    var student = new Student();
+
+                    student.ApplicationUserId = appUser.Id;
+                    student.EnrollmentDate = registerViewModel.EnrollmentDate.Value;
+                    student.DateOfBirth = registerViewModel.DateOfBirth.Value;
+                    
+                    studentRepo.Add(student);
+                    await studentRepo.Save();
+
+                    await signinManger.SignInAsync(appUser, false);
+                    TempData["Massage"] = $"Welcome ${registerViewModel.UserName}";
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
                 }
             }
-            return View("Register", regsiterViewModel);
-
+            return View("Register", registerViewModel);
         }
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Login ()
+        public IActionResult Login()
         {
             return View("Login");
         }
         [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Login(LoginUsersViewModel loginUsersView)
         {
             if (!ModelState.IsValid)
-                return View("Login");
+                return View("Login", loginUsersView);
 
             var appUser = await userManager.FindByNameAsync(loginUsersView.Name);
             if (appUser == null || !await userManager.CheckPasswordAsync(appUser, loginUsersView.Password))
             {
-                ModelState.AddModelError("", "Username or password is incorrect.");
-                return View("Login", loginUsersView);
+                ModelState.AddModelError("", "The username or password is incorrect.");
+                return View("Login");
             }
 
             await signinManger.SignInAsync(appUser, loginUsersView.RememberMe);
 
-            // Role-based redirection
+            // Redirect based on user role
             if (await userManager.IsInRoleAsync(appUser, "Admin"))
                 return RedirectToAction("Index", "AdminDashboard");
-
             if (await userManager.IsInRoleAsync(appUser, "Student"))
                 return RedirectToAction("Index", "Home");
-
             if (await userManager.IsInRoleAsync(appUser, "Instructor"))
                 return RedirectToAction("Index", "InstructorDashboard");
 
-            // Fallback
+            // Fallback redirection
             return RedirectToAction("Index", "Home");
         }
 
         [Authorize]
-        public async Task<IActionResult> SignOut ()
+        public async Task<IActionResult> SignOut()
         {
-           await  signinManger.SignOutAsync();
+            await signinManger.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-        
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            // Get the currently logged-in user
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            // Check user role and fetch appropriate profile
+            if (await userManager.IsInRoleAsync(user, "Student"))
+            {
+                var student = await studentRepo.GetByApplicationUserId(user.Id); // Make this async
+                if (student == null)
+                {
+                    return NotFound("Student profile not found.");
+                }
+
+                // Map to view model (optional but recommended)
+                var viewModel = new StudentProfileViewModel
+                {
+                    FullName = user.FullName,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    DateOfBirth = student.DateOfBirth,
+                    EnrolledCourses = student.StudentCourses.Select(sc => new CourseViewModel
+                    {
+                        CourseName = sc.Course.Title,
+                        Description = sc.Course.Description,
+                        InstructorFullName = sc.Course.Instructor.User.FullName
+                    }).ToList()
+                };
+
+                return View("StudentProfile", viewModel);
+            }
+            else if (await userManager.IsInRoleAsync(user, "Instructor"))
+            {
+                var instructor = await instructorRepo.GetByApplicationUserId(user.Id); // Make async
+                if (instructor == null)
+                {
+                    return NotFound("Instructor profile not found.");
+                }
+                var viewModel = new InstructorProfileViewModel
+                {
+                    FullName = user.FullName,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    HireDate = instructor.HireDate,
+                    CoursesTaught = instructor.Courses.Select(c => new CourseViewModel
+                    {
+                        CourseName = c.Title,
+                        Description = c.Description
+                    }).ToList()
+                };
+
+                // Optionally map to InstructorProfileViewModel
+                return View("InstructorProfile", viewModel);
+            }
+            else if (await userManager.IsInRoleAsync(user, "Admin"))
+            {
+                var admin = await adminRepo.GetByApplicationUserId(user.Id); // Make async
+                if (admin == null)
+                {
+                    return NotFound("Admin profile not found.");
+                }
+                var viewModel = new AdminProfileViewModel
+                {
+                    FullName = user.FullName,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                };  
+                // Optionally map to AdminProfileViewModel
+                return View("AdminProfile", viewModel);
+            }
+
+            return Unauthorized("No valid role assigned to the user.");
+        }
+
+
     }
 }

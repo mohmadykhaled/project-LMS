@@ -130,5 +130,11 @@ namespace LMS_Project.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task<Admin> GetByApplicationUserId(string applicationUserId)
+        {
+           return await _context.Admins.Include(a => a.User)
+                .FirstOrDefaultAsync(a => a.ApplicationUserId == applicationUserId);
+        }
     }
 }
