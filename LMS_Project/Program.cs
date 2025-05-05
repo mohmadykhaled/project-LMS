@@ -27,6 +27,7 @@ namespace LMS_Project
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IStudentRepository, StudentRepository>();
             builder.Services.AddScoped<IInstructorRepository ,  InstructorRepository>();    
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

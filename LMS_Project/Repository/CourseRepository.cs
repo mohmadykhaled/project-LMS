@@ -36,6 +36,11 @@ namespace LMS_Project.Repository
                 .Include(c => c.StudentCourses)
                  .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.CourseId == courseId);
+        public async Task<IEnumerable<Course>> GetCourseswithInstructor()
+            => await _context.Courses.Include(c => c.Instructor)
+                .ThenInclude(i => i.User)
+                .AsNoTracking()
+                .ToListAsync(); 
 
         public async Task<IEnumerable<Course>> GetStudentCoursesAsync(int studentId)
             => await _context.Courses

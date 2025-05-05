@@ -20,11 +20,11 @@ namespace LMS_Project.ViewModel
 
         [Required(ErrorMessage = "User Name is Required")]
         [Display(Name = "User Name")]
-        [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage = "User name can only contain letters and numbers.")]
+        [MinLength(5)]
         public string UserName { get; set; }
         [Required]
         [Display(Name = "Full Name")]
-        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "Full name can only contain letters")]
+        [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Full name can only contain letters and spaces")]
         public string FullName { get; set; }
 
         

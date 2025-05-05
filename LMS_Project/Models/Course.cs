@@ -14,12 +14,12 @@ namespace LMS_Project.Models
         [Required]
         public string Title { get; set; }
         [Required]
-        public float Price { get; set; }    
+        public float Price { get; set; }  
+        public string? ImageUrl { get; set; }    
 
         [ForeignKey("Instructor")]
         public int? InstructorId { get; set; }   
         public Instructor Instructor { get; set; }
-        public List<string> Content { get; set; }
         public List<Material> Materials { get; set; } 
         public List<StudentCourse> StudentCourses { get; set; }
         public List<Content> Contents { get; set; }
