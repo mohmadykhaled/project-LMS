@@ -1,8 +1,8 @@
-# NAME - Student Course Management System
+# SmartLMS - Student Course Management System
 
 ## Table of Contents
 
-1. [Overview](#Overview)  
+1. [Overview](#overview)  
 2. [Features](#features)  
 3. [Tech Stack](#tech-stack)  
 4. [Folder Structure](#folder-structure)  
@@ -12,14 +12,15 @@
 8. [UI](#ui)  
 9. [Known Issues](#known-issues)  
 10. [Contribution Guide](#contribution-guide)
-11. [ Updatability & Scalability](#Updatability-&-Scalability)
-12. [About the Author](#about-the-author)
+11. [ Updatability & Scalability](#updatability-&-scalability)
+12. [ Security](#security)
+13. [About the Author](#about-the-author)
 
-## 1. Overview
+## Overview
 
-NAME is a full-stack MVC-based Learning Management System (LMS) built to facilitate online course sharing and enrollment. Unlike traditional LMS platforms tied to specific institutions, this system is designed as an open platform where any instructor can upload and manage their courses—pending approval from an admin. Once approved, students can browse available courses, register for the ones that interest them, and start learning.
+SmartLMS is a full-stack MVC-based Learning Management System (LMS) built to facilitate online course sharing and enrollment. Unlike traditional LMS platforms tied to specific institutions, this system is designed as an open platform where any instructor can upload and manage their courses—pending approval from an admin. Once approved, students can browse available courses, register for the ones that interest them, and start learning.
 
- ## 2. Features
+ ## Features
 ### 🔒 Authentication & Authorization
 Role-based access: Admin, Instructor, and Student
 
@@ -71,7 +72,7 @@ Search by keyword
 
 - Development Environment: Visual Studio, SQL Server Management Studio
 
-## 4. Folder Structure
+## Folder Structure
 LMS-Project/
   - Controllers/
     - CourseController.cs
@@ -105,7 +106,7 @@ LMS-Project/
   - appsettings.json
   - Program.cs
 
-## 5. Setup Instructions
+## Setup Instructions
 
 ### Prerequisites
 - .NET SDK 8.0
@@ -131,10 +132,54 @@ LMS-Project/
 
 - Press F5 or click Start to run the application
 
-## 6. Database Design
-## 7. API Documentation
-## 8. UI
-## 9. Known Issues
+## Database Design
+### Class Diagram:
+![ERD](images/ERD.png)
+## API Documentation
+### 1. Admin APIs (from IAdminRepository.cs)
+- User Management:
+ - GET /api/admin/users - Get all users
+ - GET /api/admin/users/{userId} - Get user by ID
+-Course Management:
+ - GET /api/admin/courses - Get all courses
+ - GET /api/admin/courses/{courseId} - Get course by ID
+ - POST /api/admin/courses - Create new course
+ - PUT /api/admin/courses/{courseId} - Update course
+ - DELETE /api/admin/courses/{courseId} - Delete course
+- Analytics:
+ - GET /api/admin/statistics/users - Get user statistics
+ - GET /api/admin/statistics/courses - Get course statistics
+- Role Management:
+ - POST /api/admin/users/{userId}/roles - Assign role to user
+ - DELETE /api/admin/users/{userId}/roles/{roleName} - Remove role from user
+   
+### 2. Instructor APIs (from IInstructorRepository.cs)
+- Course Management:
+ - POST /api/instructor/courses/submit - Submit course for approval
+ - GET /api/instructor/{instructorId}/courses - Get instructor's courses
+ - GET /api/instructor/user/{applicationUserId} - Get instructor by user ID
+   
+### 3. Home Controller Endpoints (from HomeController.cs)
+- Public Pages:
+ - GET / - Home page
+ - GET /Home/Privacy - Privacy page
+ - GET /Home/About - About page
+ - GET /Home/Courses - Courses listing
+ - GET /Home/Contact - Contact page
+ - GET /Home/Error - Error handling
+   
+## UI
+- Clean and responsive interface built with Razor Pages and Bootstrap
+
+- Role-based navigation and access control
+
+- Forms for login, registration, and course submission
+
+- Course listing with filters and search functionality
+
+- Admin dashboard for managing content and users
+  
+## Known Issues
 - Instructors currently cannot edit a course once it is submitted for review.
 
 - Course approval doesn't trigger a real-time notification (requires page refresh).
@@ -143,7 +188,7 @@ LMS-Project/
 
 - Some UI elements may need improvement on smaller mobile screens.
 
-## 10. Contribution Guide
+## Contribution Guide
 - Contributions are welcome! To get started:
 
     - Fork the repository
@@ -163,7 +208,33 @@ LMS-Project/
 
   - Clearly describe what your PR does and which issue it addresses
 
-## 11.  Updatability & Scalability
-## 12. About the Author
+##  Updatability & Scalability
+- Built using modular MVC design for easy component reuse
+
+- Database interactions handled via Entity Framework Core for flexibility
+
+- Identity-based roles make it easy to add new user types
+
+- Future plans include support for certificate generation, mobile app, and real-time notifications
+
+## Security
+- ASP.NET Identity used for authentication and role-based access control
+
+- Roles include: Admin, Instructor, and Student, implemented using IdentityRole
+
+- User accounts extend IdentityUser for consistency with ASP.NET Core standards
+
+- Passwords are hashed and stored securely by the Identity framework
+
+- Middleware checks enforce access restrictions across the app
+
+- Login attempts are validated with built-in Identity protections (lockout, email confirmation, etc.)
+## About the Team
+### Mohmady
+### Abdelrazek
+### Nancy
+### Khalid
+### Toka 
+### Mohammed
   
   
