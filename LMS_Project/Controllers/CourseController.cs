@@ -34,6 +34,7 @@ namespace LMS_Project.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Create(CreateCourseViewModel createCourseViewModel ,IFormFile courseImage)
         {
+
             if (ModelState.IsValid)
             {
                 string imageUrl = null;
@@ -69,6 +70,7 @@ namespace LMS_Project.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditCourse(int Id)
         {
+             
             var coures = await courseRepository.GetById(Id);
             if (coures == null)
             {

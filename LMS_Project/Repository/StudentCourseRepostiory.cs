@@ -16,14 +16,24 @@ namespace LMS_Project.Repository
 
         public async Task EnrollStudentAsync(int studentId, int courseId)
         {
-            var Enrollment = await context.StudentCourses.FirstOrDefaultAsync(sc => sc.CourseId == courseId && sc.StudentId == studentId);
+            // تحقق إذا كان الطالب قد سجل بالفعل في هذا الكورس
+            var Enrollment = await context.StudentCourses
+                .FirstOrDefaultAsync(sc => sc.CourseId == courseId && sc.StudentId == studentId);
+
+            // إذا لم يكن الطالب قد سجل في هذا الكورس، أنشئ العلاقة
             if (Enrollment == null)
             {
+                Enrollment = new StudentCourse
+                {
+                    StudentId = studentId,
+                    CourseId = courseId
+                };
+
+                // أضف الكائن الجديد إلى قاعدة البيانات
                 await context.StudentCourses.AddAsync(Enrollment);
             }
-            
-
         }
+ 
 
         public async Task<IEnumerable<StudentCourse>> GetStudentCoursesByStudentId(int studentId)
         {

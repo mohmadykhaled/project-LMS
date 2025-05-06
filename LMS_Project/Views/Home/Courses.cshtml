@@ -38,7 +38,8 @@
                                 <h5 class="card-title text-primary">@course.CourseName</h5>
                                 <p class="card-text"><small class="text-muted">Instructor: @course.InstructorName</small></p>
                                 <p class="card-text"><small class="text-muted">Price: $@course.Price</small></p>
-                                <a href="#" class="btn btn-outline-primary mt-auto">Enroll</a>
+                                <a asp-controller="Student" asp-action="Details" asp-route-id="@course.Id"
+                                   class="btn btn-outline-primary">View Details</a>
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <a asp-action="DeleteCourse" asp-controller="Course" asp-route-id="@course.Id"

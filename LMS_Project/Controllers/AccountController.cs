@@ -151,7 +151,7 @@ namespace LMS_Project.Controllers
                     {
                         CourseName = sc.Course.Title,
                         Description = sc.Course.Description,
-                        InstructorFullName = sc.Course.Instructor.User.FullName
+                        InstructorFullName = "mohamed Ahmed"
                     }).ToList()
                 };
 

@@ -1,6 +1,7 @@
 ﻿using LMS_Project.Data;
 using LMS_Project.Interfaces;
 using LMS_Project.Models;
+using LMS_Project.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMS_Project.Repository
@@ -18,9 +19,10 @@ namespace LMS_Project.Repository
         {
            return await context.Students
                 .Include(s => s.StudentCourses) 
-                .Include(s => s.User)
+                 .ThenInclude(sc => sc.Course)
+                 .ThenInclude(c => c.Instructor)
                 .FirstOrDefaultAsync(s => s.ApplicationUserId == applicationUserId);
         }
     }
    
-} 
+}

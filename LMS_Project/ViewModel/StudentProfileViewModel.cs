@@ -6,7 +6,7 @@
         public string UserName { get; set; }
         public string Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public List<CourseViewModel> EnrolledCourses { get; set; } = new();
+        public List<CourseViewModel> EnrolledCourses { get; set; } 
     }
 
     public class CourseViewModel
