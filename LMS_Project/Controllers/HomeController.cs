@@ -39,7 +39,9 @@ namespace LMS_Project.Controllers
             {
                 CourseName = c.CourseName,
                 InstructorName = c.Instructor.User.FullName,
-                ImageUrl = c.ImageUrl   
+                ImageUrl = c.ImageUrl ,
+                Price = c.Price,
+                Id = c.CourseId
             }).ToList();
             return View("Courses",courseList);
         }

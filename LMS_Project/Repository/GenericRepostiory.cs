@@ -20,7 +20,7 @@ namespace LMS_Project.Repository
 
         public async Task Delete(int Id)
         {
-            var entity = await context.Set<T>().FindAsync(Id);
+            var  entity = await context.Set<T>().FindAsync(Id);
             if (entity != null)
             {
                 context.Set<T>().Remove(entity);
