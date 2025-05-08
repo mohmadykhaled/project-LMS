@@ -1,0 +1,27 @@
+﻿@model AssignInstructorViewModel
+@{
+    ViewData["Title"] = "Assign Instructor";
+}
+
+<h2>Assign Instructor to Course: @Model.CourseName</h2>
+
+<form asp-action="AssignInstructor" asp-route-id="@Model.CourseId" method="post">
+    <input type="hidden" asp-for="CourseId" />
+
+    <div class="form-group">
+        <label asp-for="InstructorId" class="control-label">Instructor</label>
+        <select asp-for="InstructorId" class="form-control" asp-items="Model.Instructors">
+            <option value="">-- Select Instructor --</option>
+        </select>
+        <span asp-validation-for="InstructorId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Assign</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

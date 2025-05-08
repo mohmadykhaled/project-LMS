@@ -8,5 +8,7 @@ namespace LMS_Project.Interfaces
         Task<bool> SubmitCourseForApproval(int instructorId, Course course);
         Task<IEnumerable<Course>> GetInstructorCourses(int instructorId);
         Task<Instructor> GetByApplicationUserId(string applicationUserId);
+        Task<List<Instructor>> GetAllwithUser();
+        Task<int> CountAsync();
     }
 }

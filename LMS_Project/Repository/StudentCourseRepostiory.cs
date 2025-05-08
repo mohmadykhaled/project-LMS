@@ -16,11 +16,10 @@ namespace LMS_Project.Repository
 
         public async Task EnrollStudentAsync(int studentId, int courseId)
         {
-            // تحقق إذا كان الطالب قد سجل بالفعل في هذا الكورس
+            
             var Enrollment = await context.StudentCourses
                 .FirstOrDefaultAsync(sc => sc.CourseId == courseId && sc.StudentId == studentId);
 
-            // إذا لم يكن الطالب قد سجل في هذا الكورس، أنشئ العلاقة
             if (Enrollment == null)
             {
                 Enrollment = new StudentCourse

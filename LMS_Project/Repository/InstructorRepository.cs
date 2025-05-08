@@ -47,5 +47,18 @@ namespace LMS_Project.Repositories
                 .Include(i => i.User)
                 .FirstOrDefaultAsync(i => i.ApplicationUserId == applicationUserId);    
         }
+        public async Task<List<Instructor>> GetAllwithUser()
+        {
+            return await _context.Instructors
+                .Include(i => i.User)
+                .AsNoTracking()
+                .ToListAsync(); 
+        }
+
+        public  async Task<int> CountAsync()
+        {
+            return await _context.Instructors.CountAsync();
+                
+        }
     }
 }

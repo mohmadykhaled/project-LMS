@@ -69,5 +69,10 @@ namespace LMS_Project.Repository
                 
             }
         }
+
+        public async Task<int> CountAsync()
+        {
+            return await _context.Courses.CountAsync();
+        }
     }
 }

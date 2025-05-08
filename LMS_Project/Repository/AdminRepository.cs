@@ -136,5 +136,7 @@ namespace LMS_Project.Services
            return await _context.Admins.Include(a => a.User)
                 .FirstOrDefaultAsync(a => a.ApplicationUserId == applicationUserId);
         }
+
+      
     }
 }

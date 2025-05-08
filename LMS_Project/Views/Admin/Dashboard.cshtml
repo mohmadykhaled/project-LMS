@@ -1,0 +1,187 @@
+﻿@model LMS_Project.ViewModel.AdminDashBoardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Adjust path if needed
+}
+
+@section Styles {
+    <style>
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #ffffff;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(100%);
+        }
+
+        .sidebar .nav-link {
+            color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #e9ecef;
+        }
+
+        .sidebar .nav-link i {
+            margin-left: 10px;
+        }
+
+        .main-content {
+            margin-right: 270px;
+            padding: 20px;
+            transition: margin-right 0.3s ease;
+        }
+
+        .main-content.full-width {
+            margin-right: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 260px;
+            z-index: 1100;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: right 0.3s ease;
+        }
+
+        .toggle-btn.collapsed {
+            right: 20px;
+        }
+
+        @@media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-right: 20px;
+            }
+
+            .toggle-btn {
+                right: 20px;
+            }
+        }
+    </style>
+}
+
+<div>
+    <!-- Toggle Sidebar Button -->
+    <button class="toggle-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <h5 class="text-center mb-4">Navigation</h5>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Admin" asp-action="ManageCourses">
+                    <i class="fas fa-book"></i> Manage Courses
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Admin" asp-action="ManageStudents">
+                    <i class="fas fa-users"></i> Manage Students
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-controller="Admin" asp-action="ManageInstructors">
+                    <i class="fas fa-chalkboard-teacher"></i> Manage Instructors
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content">
+        <div class="container">
+            <h2 class="mb-5 text-center">Dashboard</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="card shadow-sm text-center">
+                        <div class="card-body">
+                            <h3 class="text-primary">@Model.TotalStudents</h3>
+                            <p class="text-muted">Total Students</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="card shadow-sm text-center">
+                        <div class="card-body">
+                            <h3 class="text-primary">@Model.TotalCourses</h3>
+                            <p class="text-muted">Total Courses</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="card shadow-sm text-center">
+                        <div class="card-body">
+                            <h3 class="text-primary">@Model.TotalInstructors</h3>
+                            <p class="text-muted">Total Instructors</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a class="btn btn-primary mt-4" asp-controller="Admin" asp-action="ManageCourses">Go to Course Management</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const toggleBtn = document.querySelector('.toggle-btn');
+
+            sidebar.classList.toggle('collapsed');
+            sidebar.classList.toggle('active');
+            mainContent.classList.toggle('full-width');
+            toggleBtn.classList.toggle('collapsed');
+        }
+    </script>
+}

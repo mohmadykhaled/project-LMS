@@ -23,6 +23,12 @@ namespace LMS_Project.Repository
                  .ThenInclude(c => c.Instructor)
                 .FirstOrDefaultAsync(s => s.ApplicationUserId == applicationUserId);
         }
+        public async Task<int> Countasync()
+        {
+            return await context.Students.CountAsync();
+        }
+
+      
     }
    
 }

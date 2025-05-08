@@ -2,12 +2,14 @@
 using LMS_Project.Interfaces;
 using LMS_Project.Models;
 using LMS_Project.Repository;
+using LMS_Project.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LMS_Project.Controllers
 {
+    [Authorize(Roles = "Student")]
     public class StudentController : Controller
     {
         private readonly ICourseRepository courseRepo;
@@ -65,10 +67,34 @@ namespace LMS_Project.Controllers
 
             await studentCourseRepo.EnrollStudentAsync(student.StudentId, courseId);
             await studentCourseRepo.Save();
-            TempData["Message"] = "You have been successfully enrolled in the course.";
+            TempData["Massage"] = "You have been successfully enrolled in the course.";
             return RedirectToAction("Index", "Home");
         }
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null) return NotFound("User not found.");
 
+            var student = await studetnrepo.GetByApplicationUserId(user.Id);
+            if (student == null) return NotFound("Student profile not found.");
+
+            var viewModel = new StudentProfileViewModel
+            {
+                FullName = user.FullName,
+                UserName = user.UserName,
+                Email = user.Email,
+                DateOfBirth = student.DateOfBirth,
+                EnrolledCourses = student.StudentCourses.Select(sc => new CourseViewModel
+                {
+                    CourseName = sc.Course.Title,
+                    Description = sc.Course.Description,
+                    InstructorFullName = "Mohamed Ahmed"
+                }).ToList()
+            };
+
+            return View("StudentProfile", viewModel);
+        }
 
     }
 }

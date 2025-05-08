@@ -20,11 +20,10 @@ namespace LMS_Project.ViewModel
 
         [Required(ErrorMessage = "User Name is Required")]
         [Display(Name = "User Name")]
-        [MinLength(5)]
+        [StringLength(100, MinimumLength = 5, ErrorMessage = "User Name must be at least 5 characters long.")]
         public string UserName { get; set; }
         [Required]
         [Display(Name = "Full Name")]
-        [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Full name can only contain letters and spaces")]
         public string FullName { get; set; }
 
         

@@ -67,7 +67,7 @@ namespace LMS_Project.Controllers
                     await studentRepo.Save();
 
                     await signinManger.SignInAsync(appUser, false);
-                    TempData["Massage"] = $"Welcome ${registerViewModel.UserName}";
+                    TempData["Massage"] = $"Welcome {registerViewModel.UserName}";
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -104,11 +104,11 @@ namespace LMS_Project.Controllers
 
             // Redirect based on user role
             if (await userManager.IsInRoleAsync(appUser, "Admin"))
-                return RedirectToAction("Index", "AdminDashboard");
+                return RedirectToAction("Dashboard", "Admin");
             if (await userManager.IsInRoleAsync(appUser, "Student"))
                 return RedirectToAction("Index", "Home");
             if (await userManager.IsInRoleAsync(appUser, "Instructor"))
-                return RedirectToAction("Index", "InstructorDashboard");
+                return RedirectToAction("Index", "Home");
 
             // Fallback redirection
             return RedirectToAction("Index", "Home");
@@ -120,85 +120,22 @@ namespace LMS_Project.Controllers
             await signinManger.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Profile()
+        public async Task<IActionResult> RedirectToProfile()
         {
-            // Get the currently logged-in user
             var user = await userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound("User not found.");
-            }
 
-            // Check user role and fetch appropriate profile
             if (await userManager.IsInRoleAsync(user, "Student"))
-            {
-                var student = await studentRepo.GetByApplicationUserId(user.Id); // Make this async
-                if (student == null)
-                {
-                    return NotFound("Student profile not found.");
-                }
+                return RedirectToAction("Profile", "Student");
 
-                // Map to view model (optional but recommended)
-                var viewModel = new StudentProfileViewModel
-                {
-                    FullName = user.FullName,
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    DateOfBirth = student.DateOfBirth,
-                    EnrolledCourses = student.StudentCourses.Select(sc => new CourseViewModel
-                    {
-                        CourseName = sc.Course.Title,
-                        Description = sc.Course.Description,
-                        InstructorFullName = "mohamed Ahmed"
-                    }).ToList()
-                };
+            if (await userManager.IsInRoleAsync(user, "Instructor"))
+                return RedirectToAction("Profile", "Instructor");
 
-                return View("StudentProfile", viewModel);
-            }
-            else if (await userManager.IsInRoleAsync(user, "Instructor"))
-            {
-                var instructor = await instructorRepo.GetByApplicationUserId(user.Id); // Make async
-                if (instructor == null)
-                {
-                    return NotFound("Instructor profile not found.");
-                }
-                var viewModel = new InstructorProfileViewModel
-                {
-                    FullName = user.FullName,
-                    UserName = user.UserName,
-                    Email = user.Email,
-                    HireDate = instructor.HireDate,
-                    CoursesTaught = instructor.Courses.Select(c => new CourseViewModel
-                    {
-                        CourseName = c.Title,
-                        Description = c.Description
-                    }).ToList()
-                };
+            if (await userManager.IsInRoleAsync(user, "Admin"))
+                return RedirectToAction("Profile", "Admin");
 
-                // Optionally map to InstructorProfileViewModel
-                return View("InstructorProfile", viewModel);
-            }
-            else if (await userManager.IsInRoleAsync(user, "Admin"))
-            {
-                var admin = await adminRepo.GetByApplicationUserId(user.Id); // Make async
-                if (admin == null)
-                {
-                    return NotFound("Admin profile not found.");
-                }
-                var viewModel = new AdminProfileViewModel
-                {
-                    FullName = user.FullName,
-                    UserName = user.UserName,
-                    Email = user.Email,
-                };  
-                // Optionally map to AdminProfileViewModel
-                return View("AdminProfile", viewModel);
-            }
-
-            return Unauthorized("No valid role assigned to the user.");
+            return RedirectToAction("AccessDenied", "Account");
         }
+
 
 
     }
