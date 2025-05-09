@@ -1,10 +1,12 @@
 ﻿using LMS_Project.Interfaces;
 using LMS_Project.Models;
 using LMS_Project.Repositories;
+using LMS_Project.Repository;
 using LMS_Project.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LMS_Project.Controllers
 {
@@ -88,6 +90,51 @@ namespace LMS_Project.Controllers
             };
 
             return View("InstructorProfile", viewModel);
+        }
+        [HttpGet]
+
+        public async Task<IActionResult> DeleteInstructor(int id)
+        {
+            var Instructor = await instructorRepo.GetById(id);
+            if (Instructor == null)
+            {
+                return NotFound();
+            }
+            return View("Delete", Instructor);
+        }
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var instructor= await instructorRepo.GetByIdIncludeUser(id);
+            if (instructor == null)
+            {
+                return NotFound();
+            }
+
+            await instructorRepo.Delete(id);
+            await instructorRepo.Save();
+            TempData["Massage"] = $"Instuctor {instructor.User.FullName} was Deleted";
+            return RedirectToAction("ManageInstructors", "Admin");
+        }
+        public async Task<IActionResult> InstructorDetails(int id)
+        {
+            var instructor = await instructorRepo.GetByIdIncludeUser(id);
+            if (instructor == null)
+            {
+                return NotFound();
+            }
+            var viewModel = new EditInstructorViewModel
+            {
+                Id = instructor.InstructorId,
+                Name = instructor.User.FullName,
+                Email = instructor.User.Email,
+                HireDate = instructor.HireDate,
+                UserName = instructor.User.UserName,
+                AvailableCourses = instructor.Courses?.Select(c => c.CourseName).ToList() ?? new List<string>()
+            };
+            return View("Details", viewModel);
         }
 
     }

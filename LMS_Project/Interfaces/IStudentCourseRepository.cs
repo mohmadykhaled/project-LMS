@@ -8,5 +8,6 @@ namespace LMS_Project.Interfaces
         Task<IEnumerable<StudentCourse>> GetStudentCoursesByCourseId(int courseId);
         Task EnrollStudentAsync(int studentId, int courseId);
         Task UnEnrollStudentAsync(int studentId, int courseId);
+        Task<bool> IsStudentEnrolledAsync(int studentId, int courseId);
     }
 }

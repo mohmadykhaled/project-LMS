@@ -166,7 +166,7 @@ namespace LMS_Project.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCourses ()
+        public async Task<IActionResult> ManageCourses()
         {
             var Courses  =  await _adminRepo.GetAllCoursesAsync();
             var countstudent = await studentRepo.Countasync();
@@ -186,7 +186,8 @@ namespace LMS_Project.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllStudents ()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ManageStudents()
         {
             var student = await studentRepo.GetAllStudents();
             var  students = student.Select(s => new GetAllStudentsViewModel
@@ -200,6 +201,21 @@ namespace LMS_Project.Controllers
             }).ToList();
              
         return View ("GetAllStudents",students);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> ManageInstructors()
+        {
+            var instructor = await instructorRepo.GetAllwithUser();
+            var viewmodel = instructor.Select(i => new IstnructorListViewModel
+            {
+                Id = i.InstructorId,
+                UserName = i.User.UserName,
+                HireDate = i.HireDate,
+                Courses = i.Courses.Select(c => c.CourseName).ToList()
+
+            }).ToList();    
+          return View("GetAllInstructors", viewmodel);
         }
 
     }

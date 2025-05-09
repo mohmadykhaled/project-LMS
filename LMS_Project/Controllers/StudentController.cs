@@ -36,40 +36,68 @@ namespace LMS_Project.Controllers
         }
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Enroll (int courseId)
+        public async Task<IActionResult> Enroll(int courseId)
         {
-            var userId = userManager.GetUserId(User);   
+            var userId = userManager.GetUserId(User);
             var student = await studentRepo.GetByApplicationUserId(userId);
+
             if (student == null)
             {
                 return NotFound();
             }
+
             var course = await courseRepo.GetById(courseId);
-            
-            return View(course);    
-        }
-        [HttpPost]
-        
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EnrollConfirm (int courseId)
-        {
-            var userId =  userManager.GetUserId(User);
-            var student = await studentRepo.GetByApplicationUserId(userId);
-            if (student == null)
-            {
-                return NotFound();
-            }
-            var course =await courseRepo.GetById(courseId);
+
             if (course == null)
             {
                 return NotFound();
             }
 
+            // Check if the student is already enrolled in the course
+            var isEnrolled = await studentCourseRepo.IsStudentEnrolledAsync(student.StudentId, courseId);
+            if (isEnrolled)
+            {
+                TempData["Message"] = "You are already enrolled in this course.";
+                return RedirectToAction("Index", "Home"); // Redirect to the homepage
+            }
+
+            return View(course);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EnrollConfirm(int courseId)
+        {
+            var userId = userManager.GetUserId(User);
+            var student = await studentRepo.GetByApplicationUserId(userId);
+
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            var course = await courseRepo.GetById(courseId);
+
+            if (course == null)
+            {
+                return NotFound();
+            }
+
+            // Check if the student is already enrolled in the course
+            var isEnrolled = await studentCourseRepo.IsStudentEnrolledAsync(student.StudentId, courseId);
+            if (isEnrolled)
+            {
+                TempData["Message"] = "You are already enrolled in this course.";
+                return RedirectToAction("Index", "Home"); // Redirect to the homepage
+            }
+
             await studentCourseRepo.EnrollStudentAsync(student.StudentId, courseId);
             await studentCourseRepo.Save();
-            TempData["Massage"] = "You have been successfully enrolled in the course.";
+
+            TempData["Message"] = "You have been successfully enrolled in the course.";
             return RedirectToAction("Index", "Home");
         }
+
         [HttpGet]
         public async Task<IActionResult> Profile()
         {
@@ -132,7 +160,7 @@ namespace LMS_Project.Controllers
             {
                 return NotFound();
             }
-            return View(student);
+            return View("StudentDetails",student);
         }
     }
 }

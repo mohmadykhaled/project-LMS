@@ -1,0 +1,54 @@
+﻿@model LMS_Project.ViewModel.EditInstructorViewModel
+
+@{
+    ViewData["Title"] = "Instructor Details";
+}
+
+<h1 class="text-primary">Instructor Details</h1>
+
+<div class="card shadow p-4 mb-5 bg-white rounded">
+    <h4 class="card-title text-primary">Instructor Information</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3 fw-bold">
+            <label asp-for="Id"></label>
+        </dt>
+        <dd class="col-sm-9">
+            <span>@Model.Id</span>
+        </dd>
+
+        <dt class="col-sm-3 fw-bold">
+            <label asp-for="Name"></label>
+        </dt>
+        <dd class="col-sm-9">
+            <span>@Model.Name</span>
+        </dd>
+
+        <dt class="col-sm-3 fw-bold">
+            <label asp-for="Email"></label>
+        </dt>
+        <dd class="col-sm-9">
+            <span>@Model.Email</span>
+        </dd>
+
+        <dt class="col-sm-3 fw-bold">
+            <label asp-for="HireDate"></label>
+        </dt>
+        <dd class="col-sm-9">
+            <span>@Model.HireDate.ToString("MM/dd/yyyy HH:mm:ss")</span>
+        </dd>
+
+        <dt class="col-sm-3 fw-bold">
+            <label asp-for="UserName"></label>
+        </dt>
+        <dd class="col-sm-9">
+            <span>@Model.UserName</span>
+        </dd>
+    </dl>
+
+    <div class="d-flex gap-3">
+        <a asp-action="ManageInstructors" asp-controller="Admin" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>

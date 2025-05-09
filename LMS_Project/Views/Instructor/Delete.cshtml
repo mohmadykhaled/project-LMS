@@ -1,0 +1,46 @@
+﻿@model LMS_Project.Models.Instructor
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1 class="text-danger">Delete Instructor</h1>
+
+<h3 class="mb-4">Are you sure you want to delete this instructor?</h3>
+
+<div class="card shadow p-4 mb-5 bg-white rounded">
+    <h4 class="card-title text-primary">Instructor Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3 fw-bold">
+            <label asp-for="InstructorId"></label>
+        </dt>
+        <dd class="col-sm-9">
+            <span asp-for="InstructorId">@Model.InstructorId</span>
+        </dd>
+
+        <dt class="col-sm-3 fw-bold">
+            <label asp-for="ApplicationUserId"></label>
+        </dt>
+        <dd class="col-sm-9">
+            <span asp-for="ApplicationUserId">@Model.ApplicationUserId</span>
+        </dd>
+
+        <dt class="col-sm-3 fw-bold">
+            <label asp-for="HireDate"></label>
+        </dt>
+        <dd class="col-sm-9">
+            <span asp-for="HireDate">@Model.HireDate.ToShortDateString()</span>
+        </dd>
+    </dl>
+
+    <form asp-action="DeleteConfirmed" method="post">
+        <input type="hidden" name="id" value="@Model.InstructorId" />
+        <div class="d-flex justify-content-between">
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            <a asp-action="ManageInstructors" asp-controller="Admin" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </form>
+</div>

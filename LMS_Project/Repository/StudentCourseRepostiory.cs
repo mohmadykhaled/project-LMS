@@ -30,6 +30,7 @@ namespace LMS_Project.Repository
 
                 // أضف الكائن الجديد إلى قاعدة البيانات
                 await context.StudentCourses.AddAsync(Enrollment);
+                await context.SaveChangesAsync();
             }
         }
  
@@ -58,6 +59,13 @@ namespace LMS_Project.Repository
             {
                 context.StudentCourses.Remove(Enrollment);
             }
+        }
+
+        public async Task<bool> IsStudentEnrolledAsync(int studentId, int courseId)
+        {
+           
+            return await context.StudentCourses
+                .AnyAsync(sc => sc.StudentId == studentId && sc.CourseId == courseId);
         }
     }
 }

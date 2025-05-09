@@ -1,0 +1,82 @@
+﻿@model IEnumerable<LMS_Project.ViewModel.IstnructorListViewModel>
+
+@{
+    ViewData["Title"] = "Get All Instructors";
+}
+@if (TempData["Massage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show fixed top-4 right-4 z-50" role="alert">
+        <strong>Success!</strong> @TempData["Massage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    TempData["Massage"] = null; // Clear TempData after displaying
+
+}
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary">Manage Instructors</h2>
+
+    <div class="d-flex justify-content-end mb-4">
+        <a asp-action="CreateInstructor" asp-controller="Instructor" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i> Create New Instructor
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Instructor ID</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Hire Date</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No Instructors Found</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td data-label="Instructor ID" class="fw-bold">@item.Id</td>
+                            <td data-label="Username">@item.UserName</td>
+                            <td data-label="Hire Date">@item.HireDate.ToShortDateString()</td>
+                            <td data-label="Actions" class="actions">
+                                <div class="btn-group">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                                    <a asp-action="DeleteInstructor" asp-controller="Instructor" asp-route-id="@item.Id" class="btn btn-info btn-sm">Delete</a>
+                                    <a asp-action="InstructorDetails" asp-controller="Instructor" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Details</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .table th, .table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .btn-group .btn {
+        margin: 0 3px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+</style>

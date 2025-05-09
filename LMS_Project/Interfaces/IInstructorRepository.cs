@@ -10,5 +10,6 @@ namespace LMS_Project.Interfaces
         Task<Instructor> GetByApplicationUserId(string applicationUserId);
         Task<List<Instructor>> GetAllwithUser();
         Task<int> CountAsync();
+        Task<Instructor> GetByIdIncludeUser(int Id);
     }
 }

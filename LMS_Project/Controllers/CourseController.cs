@@ -25,6 +25,7 @@ namespace LMS_Project.Controllers
         }
 
         [HttpGet]
+        
         public IActionResult Create ()
         {
             var viewmodel = new CreateCourseViewModel();
@@ -32,6 +33,7 @@ namespace LMS_Project.Controllers
         }
         [HttpPost]
         [AutoValidateAntiforgeryToken]
+       
         public async Task<IActionResult> Create(CreateCourseViewModel createCourseViewModel ,IFormFile courseImage)
         {
 
@@ -67,7 +69,7 @@ namespace LMS_Project.Controllers
             return View(createCourseViewModel);
         }
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+       
         public async Task<IActionResult> EditCourse(int Id)
         {
              
@@ -86,7 +88,7 @@ namespace LMS_Project.Controllers
         }
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        [Authorize(Roles = "Admin")]
+       
         public async Task<IActionResult> Edit(int Id, CreateCourseViewModel createCourseViewModel, IFormFile courseImage)
         {
             if (Id != 0 && ModelState.IsValid)
@@ -132,7 +134,7 @@ namespace LMS_Project.Controllers
             return View(createCourseViewModel);
         }
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+       
         public async Task<IActionResult> DeleteCourse (int id )
         {
             var course = await courseRepository.GetById(id);
@@ -144,7 +146,7 @@ namespace LMS_Project.Controllers
         }
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        [Authorize(Roles = "Admin")]
+     
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var course = await courseRepository.GetById(id);
@@ -156,7 +158,7 @@ namespace LMS_Project.Controllers
             await  courseRepository.Delete(id);
             await  courseRepository.Save();
             TempData["Massage"] = $"Course {course.CourseName} was Deleted";
-            return RedirectToAction("GetAllCourses", "Admin");
+            return RedirectToAction("ManageCourses", "Admin");
         }
 
     }

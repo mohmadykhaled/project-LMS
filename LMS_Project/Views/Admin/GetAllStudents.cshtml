@@ -162,8 +162,8 @@
                             </td>
                             <td data-label="Actions" class="actions">
                                 <div class="btn-group">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info">Details</a>
-                                    <a asp-action="DeleteStudent" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                                    <a asp-action="StudentDetails" asp-controller ="Student" asp-route-id="@item.Id" class="btn btn-info">Details</a>
+                                    <a asp-action="DeleteStudent" asp-controller="Student" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
                                 </div>
                             </td>
                         </tr>

@@ -51,6 +51,7 @@ namespace LMS_Project.Repositories
         {
             return await _context.Instructors
                 .Include(i => i.User)
+                .Include(i=> i.Courses)
                 .AsNoTracking()
                 .ToListAsync(); 
         }
@@ -59,6 +60,13 @@ namespace LMS_Project.Repositories
         {
             return await _context.Instructors.CountAsync();
                 
+        }
+
+        public async Task<Instructor> GetByIdIncludeUser(int Id)
+        {
+            return await _context.Instructors
+                        .Include(i => i.User)
+                        .FirstOrDefaultAsync(i => i.InstructorId == Id);  
         }
     }
 }
