@@ -10,10 +10,11 @@ using Microsoft.AspNetCore.Identity;
 using LMS_Project.ViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace LMS_Project.Controllers
 {
-    [Authorize(Roles = "Admin")]
+   
     public class AdminController : Controller
     {
        
@@ -23,20 +24,24 @@ namespace LMS_Project.Controllers
         private readonly IInstructorRepository instructorRepo;
         private readonly ICourseRepository courseRepository;
         private readonly IStudentRepository studentRepo;
+        
 
         public AdminController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IAdminRepository adminRepo,
             IInstructorRepository instructorRepo,
-            ICourseRepository _courseRepository, IStudentRepository studentRepository)
+            ICourseRepository _courseRepository, IStudentRepository studentRepository
+            
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _adminRepo = adminRepo;
             this.instructorRepo = instructorRepo;
             this.courseRepository = _courseRepository;
-            this.studentRepo = studentRepository;   
+            this.studentRepo = studentRepository;  
+          
         }
 
 
@@ -157,7 +162,44 @@ namespace LMS_Project.Controllers
             course.InstructorId = model.InstructorId;
             await courseRepository.Save();
 
-            return RedirectToAction("Courses");
+            return RedirectToAction("GetAllCourses");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCourses ()
+        {
+            var Courses  =  await _adminRepo.GetAllCoursesAsync();
+            var countstudent = await studentRepo.Countasync();
+            var viewmodel = Courses.Select(c => new GetAllCourseViewModel
+            {
+                CourseName = c.CourseName,
+                Title = c.Title,
+                Price = c.Price,
+                ImageUrl = c.ImageUrl,
+                InstructorName = c.Instructor != null ? c.Instructor.User.FullName : "Not Assigned",
+                StudentCount = c.StudentCourses?.Count() ?? 0 ,
+                Id = c.CourseId
+
+            }).ToList();
+
+            return View("GetAllCourses", viewmodel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllStudents ()
+        {
+            var student = await studentRepo.GetAllStudents();
+            var  students = student.Select(s => new GetAllStudentsViewModel
+            {
+                Id = s.StudentId,
+                UserName = s.User.UserName,
+                Email = s.User.Email,
+                EnrollmentDate = s.EnrollmentDate,
+                Courses = s.StudentCourses.Select(sc => sc.Course.CourseName).ToList()
+
+            }).ToList();
+             
+        return View ("GetAllStudents",students);
         }
 
     }

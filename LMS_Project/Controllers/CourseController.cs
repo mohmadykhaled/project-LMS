@@ -156,7 +156,7 @@ namespace LMS_Project.Controllers
             await  courseRepository.Delete(id);
             await  courseRepository.Save();
             TempData["Massage"] = $"Course {course.CourseName} was Deleted";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("GetAllCourses", "Admin");
         }
 
     }

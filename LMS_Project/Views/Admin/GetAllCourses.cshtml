@@ -1,0 +1,206 @@
+﻿@model IEnumerable<LMS_Project.ViewModel.GetAllCourseViewModel>
+@{
+    ViewData["Title"] = "Manage Courses";
+}
+@if (TempData["Massage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show fixed top-4 right-4 z-50" role="alert">
+        <strong>Success!</strong> @TempData["Massage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    TempData["Massage"] = null; // Clear TempData after displaying
+
+}
+
+@section Styles {
+    <style>
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+            .table th, .table td {
+                vertical-align: middle;
+                padding: 15px;
+                border: none;
+                border-bottom: 1px solid #dee2e6;
+            }
+
+            .table th {
+                font-weight: 600;
+                background-color: #343a40;
+                color: white;
+                text-transform: uppercase;
+                font-size: 0.9rem;
+                letter-spacing: 0.5px;
+            }
+
+            .table tbody tr {
+                transition: background-color 0.2s;
+            }
+
+                .table tbody tr:hover {
+                    background-color: #f8f9fa;
+                }
+
+        .course-image {
+            width: 100px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .badge {
+            font-size: 1rem;
+            padding: 6px 12px;
+        }
+
+        .btn-group .btn {
+            margin: 0 5px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            border-radius: 5px;
+        }
+
+        .no-data {
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        @@media (max-width: 768px) {
+            .table th, .table td
+
+        {
+            font-size: 0.85rem;
+            padding: 10px;
+        }
+
+        .course-image {
+            width: 80px;
+            height: 48px;
+        }
+
+        .btn-group .btn {
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            margin: 2px;
+        }
+
+        .table thead {
+            display: none;
+        }
+
+        .table tbody tr {
+            display: block;
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        .table tbody td {
+            display: block;
+            text-align: left !important;
+            padding: 8px 15px;
+            border-bottom: none;
+        }
+
+            .table tbody td:before {
+                content: attr(data-label);
+                font-weight: bold;
+                display: inline-block;
+                width: 40%;
+                margin-right: 10px;
+                color: #495057;
+            }
+
+            .table tbody td.actions {
+                text-align: center !important;
+            }
+
+        }
+    </style>
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary">Manage Courses</h2>
+
+    <div class="d-flex justify-content-end mb-4">
+        <a asp-action="Create" asp-controller="Course" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i> Create New Course
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Course Name</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Instructor</th>
+                    <th scope="col">Students</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="no-data">No Courses Available</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td data-label="Course Name" class="fw-bold">@item.CourseName</td>
+                            <td data-label="Title">@item.Title</td>
+                            <td data-label="Price">@item.Price.ToString("C")</td>
+                            <td data-label="Image">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="~/images/courses/@item.ImageUrl" alt="Course Image" class="course-image" />
+                                }
+                                else
+                                {
+                                    <img src="https://via.placeholder.com/100x60.png?text=No+Image" alt="No Image" class="course-image" />
+                                }
+                            </td>
+                            <td data-label="Instructor">@item.InstructorName</td>
+                            <td data-label="Students">
+                                <span class="badge bg-info">@item.StudentCount</span>
+                            </td>
+                            <td data-label="Actions" class="actions">
+                                <div class="btn-group">
+                                    <a asp-action="EditCourse" asp-controller="Course" asp-route-id="@item.Id" class="btn btn-warning">Edit</a>
+                                    <a asp-action="DeleteCourse" asp-controller="Course" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                                    <a asp-action="AssignInstructor" asp-route-id="@item.Id" class="btn btn-danger">Assign Instructor</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

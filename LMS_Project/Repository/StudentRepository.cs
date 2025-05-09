@@ -28,7 +28,15 @@ namespace LMS_Project.Repository
             return await context.Students.CountAsync();
         }
 
-      
+        public async Task<List<Student>> GetAllStudents()
+        {
+            return await  context.Students
+                .Include(s => s.User)
+                .Include(s => s.StudentCourses)
+                .ThenInclude(sc => sc.Course)   
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
    
 }

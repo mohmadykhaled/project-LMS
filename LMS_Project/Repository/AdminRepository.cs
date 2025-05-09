@@ -39,7 +39,12 @@ namespace LMS_Project.Services
         // Course Management
         public async Task<IEnumerable<Course>> GetAllCoursesAsync()
         {
-            return await _context.Courses.AsNoTracking().ToListAsync();
+            return await _context
+                 .Courses
+                .Include(c => c.Instructor)
+                .ThenInclude(I => I.User)
+                .Include(c => c.StudentCourses)
+                .AsNoTracking().ToListAsync();
         }
 
         public async Task<Course> GetCourseByIdAsync(int courseId)
@@ -70,66 +75,7 @@ namespace LMS_Project.Services
 
             _context.Courses.Remove(course);
             return await _context.SaveChangesAsync() > 0;
-        }
-
-        // Analytics and Reporting
-        public async Task<Dictionary<string, int>> GetUserStatisticsAsync()
-        {
-            var adminCountTask = _userManager.GetUsersInRoleAsync("Admin");
-            var studentCountTask = _userManager.GetUsersInRoleAsync("Student");
-            var instructorCountTask = _userManager.GetUsersInRoleAsync("Instructor");
-
-            await Task.WhenAll(adminCountTask, studentCountTask, instructorCountTask);
-
-            return new Dictionary<string, int>
-            {
-                { "Admins", adminCountTask.Result.Count },
-                { "Students", studentCountTask.Result.Count },
-                { "Instructors", instructorCountTask.Result.Count }
-            };
-        }
-
-        //public async Task<Dictionary<string, int>> GetCourseStatisticsAsync()
-        //{
-        //    var totalCoursesTask = _context.Courses.CountAsync();
-        //    var activeCoursesTask = _context.Courses.CountAsync(c => c.IsActive);
-
-        //    await Task.WhenAll(totalCoursesTask, activeCoursesTask);
-
-        //    return new Dictionary<string, int>
-        //    {
-        //        { "TotalCourses", totalCoursesTask.Result },
-        //        { "ActiveCourses", activeCoursesTask.Result }
-        //    };
-        //}
-
-        // Role Management
-        public async Task<bool> AssignRoleToUserAsync(string userId, string roleName)
-        {
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(roleName)) return false;
-
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) return false;
-
-            var result = await _userManager.AddToRoleAsync(user, roleName);
-            return result.Succeeded;
-        }
-
-        public async Task<bool> RemoveRoleFromUserAsync(string userId, string roleName)
-        {
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(roleName)) return false;
-
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) return false;
-
-            var result = await _userManager.RemoveFromRoleAsync(user, roleName);
-            return result.Succeeded;
-        }
-
-        public Task<Dictionary<string, int>> GetCourseStatisticsAsync()
-        {
-            throw new NotImplementedException();
-        }
+        } 
 
         public async Task<Admin> GetByApplicationUserId(string applicationUserId)
         {

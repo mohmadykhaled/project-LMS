@@ -38,7 +38,7 @@ namespace LMS_Project.Controllers
             var courseList = courseslist.Select(c => new CourseListViewModel
             {
                 CourseName = c.CourseName,
-                InstructorName = c.Instructor.User.FullName,
+                InstructorName = c.Instructor?.User?.FullName ?? "Unassigned",
                 ImageUrl = c.ImageUrl ,
                 Price = c.Price,
                 Id = c.CourseId

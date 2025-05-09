@@ -6,21 +6,21 @@ using LMS_Project.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Core.Types;
 
 namespace LMS_Project.Controllers
 {
-    [Authorize(Roles = "Student")]
     public class StudentController : Controller
     {
         private readonly ICourseRepository courseRepo;
-        private readonly IStudentRepository studetnrepo;
+        private readonly IStudentRepository studentRepo;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IStudentCourseRepository studentCourseRepo;
 
         public StudentController(UserManager<ApplicationUser> _userManager ,IStudentRepository _studentRepository,
             IStudentCourseRepository studentCourseRepository , ICourseRepository courseRepository)
         {
-            studetnrepo = _studentRepository;
+            studentRepo = _studentRepository;
             userManager = _userManager;
             studentCourseRepo = studentCourseRepository;
             courseRepo = courseRepository;
@@ -39,7 +39,7 @@ namespace LMS_Project.Controllers
         public async Task<IActionResult> Enroll (int courseId)
         {
             var userId = userManager.GetUserId(User);   
-            var student = await studetnrepo.GetByApplicationUserId(userId);
+            var student = await studentRepo.GetByApplicationUserId(userId);
             if (student == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace LMS_Project.Controllers
         public async Task<IActionResult> EnrollConfirm (int courseId)
         {
             var userId =  userManager.GetUserId(User);
-            var student = await studetnrepo.GetByApplicationUserId(userId);
+            var student = await studentRepo.GetByApplicationUserId(userId);
             if (student == null)
             {
                 return NotFound();
@@ -76,7 +76,7 @@ namespace LMS_Project.Controllers
             var user = await userManager.GetUserAsync(User);
             if (user == null) return NotFound("User not found.");
 
-            var student = await studetnrepo.GetByApplicationUserId(user.Id);
+            var student = await studentRepo.GetByApplicationUserId(user.Id);
             if (student == null) return NotFound("Student profile not found.");
 
             var viewModel = new StudentProfileViewModel
@@ -96,5 +96,43 @@ namespace LMS_Project.Controllers
             return View("StudentProfile", viewModel);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteStudent(int id)
+        {
+            var student = await studentRepo.GetById(id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+            return View("Delete", student);
+        }
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var student = await studentRepo.GetById(id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            await studentRepo.Delete(id);
+            await studentRepo.Save();
+            TempData["Massage"] = $"Student {student.User.UserName} was Deleted Successfully";
+            return RedirectToAction("GetAllStudents", "Admin");
+        }
+        [HttpGet]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> StudentDetails(int id)
+        {
+            var student = await studentRepo.GetById(id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+            return View(student);
+        }
     }
 }

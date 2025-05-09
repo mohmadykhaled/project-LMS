@@ -4,8 +4,9 @@
 }
 
 <h2>Assign Instructor to Course: @Model.CourseName</h2>
+<div asp-validation-summary="All" class="text-danger"></div>
 
-<form asp-action="AssignInstructor" asp-route-id="@Model.CourseId" method="post">
+<form asp-action="AssignInstructor"  asp-route-id="@Model.CourseId" method="post">
     <input type="hidden" asp-for="CourseId" />
 
     <div class="form-group">

@@ -17,14 +17,6 @@ namespace LMS_Project.Repositories
         Task<bool> CreateCourseAsync(Course course);
         Task<bool> UpdateCourseAsync(Course course);
         Task<bool> DeleteCourseAsync(int courseId);
-
-        // Analytics and Reporting
-        Task<Dictionary<string, int>> GetUserStatisticsAsync();
-        Task<Dictionary<string, int>> GetCourseStatisticsAsync();
-
-        // Role Management
-        Task<bool> AssignRoleToUserAsync(string userId, string roleName);
-        Task<bool> RemoveRoleFromUserAsync(string userId, string roleName);
         Task<Admin> GetByApplicationUserId(string applicationUserId);
         
     }

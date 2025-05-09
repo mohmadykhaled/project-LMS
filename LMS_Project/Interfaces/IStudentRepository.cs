@@ -5,6 +5,7 @@ namespace LMS_Project.Interfaces
     {
         Task<Student> GetByApplicationUserId(string applicationUserId);
         Task<int> Countasync() ;
+        Task<List<Student>> GetAllStudents();
     }
 
 }
