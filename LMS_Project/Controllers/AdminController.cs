@@ -47,7 +47,7 @@ namespace LMS_Project.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]    
-        public async Task<IActionResult> DashboardAsync()
+        public async Task<IActionResult> Dashboard()
         {
             AdminDashBoardViewModel vm = new AdminDashBoardViewModel();
             vm.TotalCourses = await courseRepository.CountAsync();
@@ -104,8 +104,8 @@ namespace LMS_Project.Controllers
 
 
 
-            TempData["Message"] = $"Admin account '{user.UserName}' created.";
-            return RedirectToAction("Index", "Home");
+            TempData["Massage"] = $"Admin account '{user.UserName}' created.";
+            return RedirectToAction("Dashboard", "Admin");
 
         }
 

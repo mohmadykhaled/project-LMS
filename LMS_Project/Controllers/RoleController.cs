@@ -33,7 +33,7 @@ namespace LMS_Project.Controllers
                 if (result.Succeeded == true)
                 {
                     TempData["Massage"] = $"Role {role.Name} Added ";
-                    return View("AddRole");
+                    return RedirectToAction("DashboardAsync", "Admin");
                 }
                 foreach (var item in result.Errors)
                 {

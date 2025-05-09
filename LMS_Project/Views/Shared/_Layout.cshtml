@@ -65,7 +65,8 @@
             @if (User.IsInRole("Admin"))
             {
                 <a class="nav-link" asp-controller="Role" asp-action="AddRole">Add Role</a>
-                <a class="nav-link" asp-controller="Admin" asp-action="CreateAdmin">Create Admin</a>               
+                <a class="nav-link" asp-controller="Admin" asp-action="CreateAdmin">Create Admin</a>
+                <a class="nav-link" asp-controller="Admin" asp-action="Dashboard">Dashboard</a>
             }
         </div>
     </header>

@@ -20,7 +20,7 @@ namespace LMS_Project.Controllers
                 return View(model);
             }
 
-            // Future: Save message to DB or send email
+         
 
             TempData["SuccessMessage"] = "Thank you for contacting us! We'll respond soon.";
             return RedirectToAction(nameof(Contact));
